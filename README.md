@@ -2,6 +2,8 @@
 
 Built by Greg, M3COL.
 
+**Live app: [swooningfish.github.io/asterisk-tone-builder](https://swooningfish.github.io/asterisk-tone-builder/)**
+
 A single-page, dependency-free web app for building multi-tone courtesy beeps and
 telemetry tones for Asterisk `app_rpt` based repeater controllers (AllStar or
 HamVOIP nodes). Build a tone segment-by-segment, preview it in the browser, and
@@ -31,8 +33,12 @@ and restart just to hear how it sounds.
 
 ## Usage
 
-This is plain HTML/CSS/JavaScript with no build step and no external
-dependencies. To run it:
+Just use the live version at
+[swooningfish.github.io/asterisk-tone-builder](https://swooningfish.github.io/asterisk-tone-builder/) —
+no install required.
+
+To run it locally instead, this is plain HTML/CSS/JavaScript with no build
+step and no external dependencies:
 
 - Open [`index.html`](index.html) directly in a browser, **or**
 - Serve the folder with any static file server, e.g.:
