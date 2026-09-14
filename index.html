@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asterisk Courtesy &amp; Telemetry Tone Builder</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="app-header">
+  <div>
+    <h1>Asterisk Courtesy &amp; Telemetry Tone Builder</h1>
+    <p class="subtitle">Build multi-tone courtesy beeps, preview them in-browser, and get a shareable link + copy/paste rpt.conf stanza. Works with AllStar or HamVOIP nodes.</p>
+  </div>
+  <button id="theme-toggle" class="btn btn-ghost" type="button" title="Toggle light/dark theme">
+    <span id="theme-icon">🌙</span> <span id="theme-label">Dark</span>
+  </button>
+</header>
+
+<main>
+
+  <section class="card">
+    <h2>Presets</h2>
+    <div class="preset-row">
+      <div class="field">
+        <label for="preset-filter">Filter presets</label>
+        <div class="input-with-clear">
+          <input id="preset-filter" type="text" placeholder="e.g. bee, ct1, doorbell…" spellcheck="false">
+          <button id="preset-filter-clear" class="input-clear-btn" type="button" title="Clear filter" aria-label="Clear filter">✕</button>
+        </div>
+      </div>
+      <div class="field grow">
+        <label for="preset-select">Presets (stock AllStarLink tones &amp; named courtesy tones)</label>
+        <select id="preset-select"></select>
+      </div>
+      <button id="load-preset" class="btn btn-primary" type="button">Load preset</button>
+      <button id="preview-preset" class="btn" type="button">Preview</button>
+    </div>
+    <p class="hint" id="preset-source-hint"></p>
+
+    <div class="preset-row">
+      <div class="field grow">
+        <label for="custom-preset-select">My saved presets</label>
+        <select id="custom-preset-select">
+          <option value="">— none saved —</option>
+        </select>
+      </div>
+      <button id="load-custom-preset" class="btn" type="button">Load</button>
+      <button id="delete-custom-preset" class="btn btn-danger" type="button">Delete</button>
+    </div>
+    <div class="button-row">
+      <button id="save-custom-preset" class="btn btn-primary" type="button">💾 Save current as preset…</button>
+      <button id="export-presets" class="btn" type="button">Export my presets (.json)</button>
+      <button id="import-presets" class="btn" type="button">Import presets (.json)</button>
+      <input id="import-file-input" type="file" accept="application/json" hidden>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="controls-row">
+      <div class="field">
+        <label for="tone-key">Courtesy tone key (left side)</label>
+        <input id="tone-key" type="text" value="ct1" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="gap-ms">Gap between segments (ms)</label>
+        <input id="gap-ms" type="number" min="0" step="10" value="0">
+      </div>
+      <div class="field">
+        <label for="tail-ms">Tail silence (ms)</label>
+        <input id="tail-ms" type="number" min="0" step="10" value="0">
+      </div>
+      <div class="field">
+        <label for="preview-volume">Preview volume (0.0–1.0)</label>
+        <input id="preview-volume" type="number" min="0" max="1" step="0.05" value="0.35">
+      </div>
+    </div>
+    <div class="button-row">
+      <button id="play-btn" class="btn" type="button">▶ Play</button>
+      <button id="stop-btn" class="btn" type="button">■ Stop</button>
+      <button id="copy-stanza" class="btn" type="button">Copy stanza line</button>
+      <button id="copy-share" class="btn" type="button">Copy share link</button>
+      <button id="reset-btn" class="btn btn-danger" type="button">Reset</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <details class="collapsible">
+      <summary><h2>Morse code tone generator</h2></summary>
+      <p class="hint">Type a message (e.g. a CW station ID) to generate standard Morse-code timed tone tuples. Speed follows the classic PARIS word-per-minute standard.</p>
+      <div class="controls-row">
+        <div class="field grow">
+          <label for="morse-text">Message</label>
+          <input id="morse-text" type="text" value="CQ CQ DE N0CALL" spellcheck="false">
+        </div>
+        <div class="field">
+          <label for="morse-key">Stanza key</label>
+          <input id="morse-key" type="text" value="cwid" spellcheck="false">
+        </div>
+      </div>
+      <div class="controls-row">
+        <div class="field">
+          <label for="morse-wpm">Speed (WPM)</label>
+          <div class="numeric-cell">
+            <input id="morse-wpm" type="number" min="5" max="40" step="1" value="20">
+            <input id="morse-wpm-range" type="range" min="5" max="40" step="1" value="20">
+          </div>
+        </div>
+        <div class="field">
+          <label for="morse-freq">Tone frequency (Hz)</label>
+          <div class="numeric-cell">
+            <input id="morse-freq" type="number" min="0" max="4000" step="1" value="700">
+            <input id="morse-freq-range" type="range" min="0" max="4000" step="1" value="700">
+          </div>
+        </div>
+        <div class="field">
+          <label for="morse-gain">Gain (0–4096)</label>
+          <div class="numeric-cell">
+            <input id="morse-gain" type="number" min="0" max="4096" step="1" value="2048">
+            <input id="morse-gain-range" type="range" min="0" max="4096" step="1" value="2048">
+          </div>
+        </div>
+      </div>
+      <p class="hint">Morse: <code id="morse-preview">&nbsp;</code></p>
+      <p class="hint" id="morse-warning"></p>
+      <div class="button-row">
+        <button id="morse-play" class="btn btn-primary" type="button">▶ Play Morse</button>
+        <button id="morse-stop" class="btn" type="button">■ Stop</button>
+        <button id="morse-copy" class="btn" type="button">Copy stanza line</button>
+        <button id="morse-append" class="btn" type="button">↓ Append to tone segments</button>
+        <button id="morse-replace" class="btn btn-danger" type="button">↓ Replace tone segments</button>
+      </div>
+      <textarea id="morse-stanza" spellcheck="false" rows="2" readonly></textarea>
+    </details>
+  </section>
+
+  <section class="card">
+    <div class="section-heading">
+      <h2>Tone segments</h2>
+      <span class="badge" id="segment-count">0 segments</span>
+      <span class="badge badge-muted" id="total-duration">0 ms total</span>
+    </div>
+    <p class="hint">Gain is the Asterisk amplitude parameter (0–4096, typically 2048) — the 4th value in each <code>t(f1,f2,dur,gain)</code> tuple. Set it per-segment to balance tones relative to each other.</p>
+    <div class="table-scroll">
+      <table id="segments-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Freq 1 (Hz)</th>
+            <th>Freq 2 (Hz, optional)</th>
+            <th>Duration (ms)</th>
+            <th>Gain (0–4096)</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="segments-body"></tbody>
+      </table>
+    </div>
+    <div class="button-row">
+      <button id="add-segment" class="btn btn-primary" type="button">+ Add tone segment</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>rpt.conf telemetry string</h2>
+    <p class="hint">Edit this directly to try new numeric values instantly — click <strong>Play string</strong> to hear it without touching the table above, or <strong>Load into table</strong> to bring the edits into the row editor.</p>
+    <textarea id="stanza-string" spellcheck="false" rows="3"></textarea>
+    <div class="button-row">
+      <button id="play-string" class="btn btn-primary" type="button">▶ Play string</button>
+      <button id="load-string" class="btn" type="button">↓ Load into table</button>
+    </div>
+    <p class="hint" id="parse-error"></p>
+  </section>
+
+  <section class="card">
+    <h2>Share link</h2>
+    <p class="hint">Encodes the current tone key, gap, tail, and all segments into the URL hash — no server required. Anyone opening the link sees this exact sequence.</p>
+    <input id="share-link" type="text" readonly spellcheck="false">
+  </section>
+
+</main>
+
+<footer>
+  <p>
+    Built by Greg, M3COL.
+  </p>
+  <p>
+    Stock tone data from the
+    <a href="https://www.allstarlink.org/telemetry-builder/" target="_blank" rel="noopener">AllStarLink Telemetry Builder</a>
+    and named courtesy tones from
+    <a href="https://www.repeater-builder.com/tech-info/courtesy-tones.html" target="_blank" rel="noopener">Repeater-Builder.com</a>.
+    Inspired by Jon K5DVT's original courtesy tone builder.
+  </p>
+</footer>
+
+<template id="segment-row-template">
+  <tr>
+    <td class="row-index"></td>
+    <td>
+      <div class="numeric-cell">
+        <input type="number" class="f1-input" step="1" min="0">
+        <input type="range" class="f1-range" step="1" min="0" max="4000">
+      </div>
+    </td>
+    <td>
+      <div class="numeric-cell">
+        <input type="number" class="f2-input" step="1" min="0" placeholder="0">
+        <input type="range" class="f2-range" step="1" min="0" max="4000">
+      </div>
+    </td>
+    <td>
+      <div class="numeric-cell">
+        <input type="number" class="dur-input" step="1" min="0">
+        <input type="range" class="dur-range" step="1" min="0" max="5000">
+      </div>
+    </td>
+    <td>
+      <div class="numeric-cell">
+        <input type="number" class="gain-input" step="1" min="0" max="4096">
+        <input type="range" class="gain-range" step="1" min="0" max="4096">
+      </div>
+    </td>
+    <td class="row-actions">
+      <div class="row-actions-inner">
+        <button class="btn btn-icon move-up" type="button" title="Move up">↑</button>
+        <button class="btn btn-icon move-down" type="button" title="Move down">↓</button>
+        <button class="btn btn-icon duplicate-row" type="button" title="Duplicate">⧉</button>
+        <button class="btn btn-icon btn-danger delete-row" type="button" title="Delete">✕</button>
+      </div>
+    </td>
+  </tr>
+</template>
+
+<script src="presets.js"></script>
+<script src="morse.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
