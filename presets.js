@@ -8,6 +8,16 @@ function seg(f1, f2, dur, gain) {
   return { f1, f2, dur, gain: gain === undefined ? GAIN : gain };
 }
 
+// Note-name shorthand for melody presets: note(freq, ms) plays a single tone,
+// rest(ms) inserts silence between phrases.
+function note(freq, dur, gain) {
+  return seg(freq, 0, dur, gain);
+}
+
+function rest(dur) {
+  return seg(0, 0, dur, 0);
+}
+
 // Source: https://www.allstarlink.org/telemetry-builder/ "Stock Tone Configurations" table.
 // These are the actual default app_rpt telemetry strings shipped with AllStarLink.
 const ALLSTARLINK_STOCK_PRESETS = [
@@ -64,7 +74,42 @@ const REPEATER_BUILDER_PRESETS = [
   { name: 'NASA "Over" Beep', key: 'ct1', segments: [seg(2450, 0, 200)] },
 ];
 
+// "Daisy Bell" (Harry Dacre, 1892) — public domain. Chorus only, transcribed
+// note-by-note (D6 B5 G5 D5 | E5 F#5 G5 E5 G5 D5 D5 | ...), phrased as 7 lines
+// with a short breath-rest between each. Famous as the tune sung by the IBM
+// 7094 in 1961 — the earliest known example of computer speech synthesis
+// singing — and later referenced by HAL 9000 in "2001: A Space Odyssey".
+const NOVELTY_PRESETS = [
+  {
+    name: 'Daisy Bell ("Bicycle Built for Two") — chorus',
+    key: 'ct1',
+    segments: [
+      // Daisy, Daisy,
+      note(1175, 300), note(988, 300), note(784, 300), note(587, 600),
+      rest(150),
+      // Give me your answer, do!
+      note(659, 150), note(740, 150), note(784, 300), note(659, 150), note(784, 150), note(587, 150), note(587, 600),
+      rest(150),
+      // I'm half crazy, all for the love of you!
+      note(880, 300), note(1175, 300), note(988, 300), note(784, 300), note(659, 150), note(740, 150), note(784, 150), note(880, 150), note(988, 300), note(880, 300), note(880, 600),
+      rest(150),
+      // It won't be a stylish marriage,
+      note(988, 150), note(1047, 150), note(988, 150), note(880, 150), note(1175, 300), note(988, 150), note(880, 150), note(784, 300), note(784, 300),
+      rest(150),
+      // I can't afford a carriage,
+      note(880, 150), note(988, 150), note(784, 150), note(659, 150), note(784, 150), note(659, 150), note(587, 300), note(587, 300),
+      rest(150),
+      // But you'll look sweet upon the seat
+      note(587, 300), note(784, 150), note(988, 150), note(880, 300), note(988, 150), note(784, 150), note(988, 150), note(880, 600),
+      rest(150),
+      // of a bicycle built for two.
+      note(988, 150), note(1047, 150), note(1175, 150), note(988, 150), note(784, 150), note(880, 300), note(587, 150), note(784, 300), note(784, 700),
+    ],
+  },
+];
+
 const PRESET_LIBRARIES = [
   { label: 'AllStarLink Stock Telemetry Tones', source: 'https://www.allstarlink.org/telemetry-builder/', presets: ALLSTARLINK_STOCK_PRESETS },
   { label: 'Repeater-Builder Named Courtesy Tones', source: 'https://www.repeater-builder.com/tech-info/courtesy-tones.html', presets: REPEATER_BUILDER_PRESETS },
+  { label: 'Novelty / Melody Tones', source: 'https://en.wikipedia.org/wiki/Daisy_Bell (1892, public domain)', presets: NOVELTY_PRESETS },
 ];
