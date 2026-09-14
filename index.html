@@ -34,7 +34,10 @@
       </div>
       <div class="field grow">
         <label for="preset-select">Presets (stock AllStarLink tones &amp; named courtesy tones)</label>
-        <select id="preset-select"></select>
+        <div class="select-wrapper">
+          <select id="preset-select"></select>
+          <svg class="select-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
       </div>
       <button id="load-preset" class="btn btn-primary" type="button">Load preset</button>
       <button id="preview-preset" class="btn" type="button">Preview</button>
@@ -44,9 +47,12 @@
     <div class="preset-row">
       <div class="field grow">
         <label for="custom-preset-select">My saved presets</label>
-        <select id="custom-preset-select">
-          <option value="">— none saved —</option>
-        </select>
+        <div class="select-wrapper">
+          <select id="custom-preset-select">
+            <option value="">— none saved —</option>
+          </select>
+          <svg class="select-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5z"/></svg>
+        </div>
       </div>
       <button id="load-custom-preset" class="btn" type="button">Load</button>
       <button id="delete-custom-preset" class="btn btn-danger" type="button">Delete</button>

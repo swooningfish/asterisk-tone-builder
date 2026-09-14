@@ -265,6 +265,33 @@ textarea {
   line-height: 1.4;
 }
 
+/* Custom dropdown arrow: a separate overlay element (not a background-image on
+   the <select> itself), positioned to align with .input-clear-btn's ✕ above it.
+   Using a sibling element instead of background-image avoids a Firefox bug
+   where a select's own background-image leaks into its native popup list,
+   tiling the icon across every option row. */
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  padding-right: 34px;
+}
+
+.select-wrapper {
+  position: relative;
+}
+
+.select-arrow {
+  position: absolute;
+  right: 9px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 18px;
+  height: 18px;
+  fill: var(--text-muted);
+  pointer-events: none;
+}
+
 input:hover, select:hover, textarea:hover {
   background: var(--md-surface-container-high);
 }
@@ -407,6 +434,10 @@ input:focus, select:focus, textarea:focus {
 
 .table-scroll {
   overflow-x: auto;
+}
+
+.table-scroll + .button-row {
+  margin-top: 16px;
 }
 
 table {
