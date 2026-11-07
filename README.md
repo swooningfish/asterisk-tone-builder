@@ -2,7 +2,7 @@
 
 Built by Greg, M3COL.
 
-**Live app: [swooningfish.github.io/asterisk-tone-builder](https://swooningfish.github.io/asterisk-tone-builder/)**
+**Live app: [asterisk-tones.xrmx.com](https://asterisk-tones.xrmx.com/)**
 
 A single-page, dependency-free web app for building multi-tone courtesy beeps and
 telemetry tones for Asterisk `app_rpt` based repeater controllers (AllStar or
@@ -34,7 +34,7 @@ and restart just to hear how it sounds.
 ## Usage
 
 Just use the live version at
-[swooningfish.github.io/asterisk-tone-builder](https://swooningfish.github.io/asterisk-tone-builder/) —
+[asterisk-tones.xrmx.com](https://asterisk-tones.xrmx.com/) —
 no install required.
 
 To run it locally instead, this is plain HTML/CSS/JavaScript with no build
